@@ -62,7 +62,7 @@
         statusMessage.textContent = 'Vérification en cours...';
 
         // Récupère le prénom saisi et le met en minuscules
-        const prenom Saisi = new FormData(form).get('prenom').trim().toLowerCase();
+        const prenomSaisi = new FormData(form).get('prenom').trim().toLowerCase();
 
         // Vérifie si le prénom fait partie de la liste autorisée
         if (prenomsAutorises.includes(prenomSaisi)) {
