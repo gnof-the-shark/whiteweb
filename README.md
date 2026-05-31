@@ -31,4 +31,4 @@ Configurer ces enregistrements DNS :
 ## ImprovMX forwarding
 
 - Domaine : `white.is-a.dev`
-- Destination owner: `christophewhite14@gmail.com`
+- Destination : configurer l'alias owner vers l'email du propriétaire dans le dashboard ImprovMX
