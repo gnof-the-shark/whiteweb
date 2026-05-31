@@ -7,61 +7,148 @@
     <style>
       :root {
         color-scheme: dark;
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-          "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue",
+          Helvetica, Arial, sans-serif;
+        --bg: #020617;
+        --panel: rgba(15, 23, 42, 0.75);
+        --border: rgba(148, 163, 184, 0.3);
+        --text: #e2e8f0;
+        --accent: #38bdf8;
+      }
+
+      * {
+        box-sizing: border-box;
       }
 
       body {
         margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-        background: radial-gradient(circle at 10% 10%, #3b82f6 0%, #0f172a 48%, #020617 100%);
+        background: radial-gradient(circle at 10% 10%, #1d4ed8 0%, #0f172a 40%, var(--bg) 100%);
+        color: var(--text);
+        line-height: 1.5;
+      }
+
+      .top-banner {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        backdrop-filter: blur(14px);
+        background: rgba(2, 6, 23, 0.75);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .site-name {
+        margin: 0;
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+      }
+
+      nav a {
+        color: var(--text);
+        text-decoration: none;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+      }
+
+      nav a:hover {
+        border-color: var(--accent);
+        color: #f8fafc;
       }
 
       main {
-        position: relative;
-        text-align: center;
-        padding: 2rem;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(16px) saturate(180%) brightness(1.06);
-        -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.06);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #f8fafc;
-        width: min(90vw, 720px);
-        box-shadow:
-          inset 0 1.5px 0 rgba(255, 255, 255, 0.62),
-          inset 0 -1px 0 rgba(0, 0, 0, 0.1),
-          0 12px 30px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
+        width: min(1000px, 92vw);
+        margin: 2rem auto 3rem;
+        display: grid;
+        gap: 1rem;
       }
 
-      main::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-          168deg,
-          rgba(255, 255, 255, 0.35) 0%,
-          rgba(255, 255, 255, 0.08) 30%,
-          transparent 58%
-        );
-        pointer-events: none;
+      section {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.2rem;
       }
 
-      h1 {
+      h2 {
         margin-top: 0;
+        margin-bottom: 0.6rem;
       }
 
+      .news-list {
+        margin: 0;
+        padding-left: 1rem;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      footer {
+        text-align: center;
+        color: #94a3b8;
+        padding: 0 1rem 1.5rem;
+      }
     </style>
   </head>
   <body>
+    <header class="top-banner">
+      <h1 class="site-name">White Family</h1>
+      <nav aria-label="Navigation principale">
+        <a href="#accueil">Accueil</a>
+        <a href="#nouvelles">Nouvelles</a>
+        <a href="#contact">Me contacter</a>
+        <a href="#apropos">À propos</a>
+      </nav>
+    </header>
+
     <main>
-      <h1>Bienvenue chez les Whites</h1>
-      <p>Le site officiel de la famille White.</p>
-      <p>Un espace familial simple et moderne, style Liquid Glass.</p>
+      <section id="accueil">
+        <h2>Bienvenue</h2>
+        <p>Bienvenue sur le site officiel de la famille White. Retrouvez ici les dernières infos, nos projets et les moyens de nous contacter.</p>
+      </section>
+
+      <section id="nouvelles">
+        <h2>Nouvelles</h2>
+        <ul class="news-list">
+          <li>📢 Nouveau design du site en ligne.</li>
+          <li>📅 Mise à jour des événements familiaux ce mois-ci.</li>
+          <li>🖼️ Galerie photo enrichie avec nos souvenirs récents.</li>
+        </ul>
+      </section>
+
+      <div class="grid">
+        <section id="contact">
+          <h2>Me contacter</h2>
+          <p>Vous pouvez écrire à <strong>contact@white.is-a.dev</strong> pour toute question ou suggestion.</p>
+        </section>
+
+        <section id="apropos">
+          <h2>À propos</h2>
+          <p>Ce site rassemble la vie de la famille White: actualités, partage de souvenirs et annonces importantes.</p>
+        </section>
+      </div>
+
+      <section>
+        <h2>Plus</h2>
+        <p>Prochainement: espace souvenirs, planning familial et page dédiée aux projets en cours.</p>
+      </section>
     </main>
+
+    <footer>
+      © White Family — white.is-a.dev
+    </footer>
   </body>
 </html>
