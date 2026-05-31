@@ -1,6 +1,6 @@
 # whiteweb
 
-Publication du site famille White via GitHub Pages + configuration DNS/Email.
+Publication du site Famille White via GitHub Pages + configuration DNS/Email.
 
 ## Pages de contact
 
