@@ -1,7 +1,5 @@
 :root {
   color-scheme: dark;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica,
-    Arial, sans-serif;
   --bg: #020617;
   --panel: rgba(15, 23, 42, 0.75);
   --border: rgba(148, 163, 184, 0.3);
@@ -9,9 +7,11 @@
   --accent: #38bdf8;
 }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
   margin: 0;
   background: radial-gradient(circle at 10% 10%, #1d4ed8 0%, #0f172a 40%, var(--bg) 100%);
   color: var(--text);
