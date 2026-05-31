@@ -128,3 +128,116 @@ footer {
   color: #94a3b8;
   padding: 0 1rem 1.5rem;
 }
+
+.calendar-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.calendar-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem;
+  background: rgba(2, 6, 23, 0.45);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.calendar-header button {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--text);
+  border-radius: 999px;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.calendar-header button:hover {
+  background: rgba(56, 189, 248, 0.2);
+}
+
+.weekday-row,
+.calendar-grid {
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekday-row {
+  margin-bottom: 0.4rem;
+}
+
+.weekday-row span {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.calendar-empty {
+  min-height: 2.7rem;
+}
+
+.calendar-day {
+  min-height: 2.7rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.calendar-day:hover {
+  border-color: var(--accent);
+}
+
+.calendar-day.selected {
+  border-color: var(--accent);
+  background: rgba(56, 189, 248, 0.18);
+}
+
+.event-count {
+  display: inline-flex;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.85);
+  color: #0f172a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 0.25rem;
+}
+
+.day-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.day-panel h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.calendar-form {
+  margin-top: 0.8rem;
+}

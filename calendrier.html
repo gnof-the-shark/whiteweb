@@ -34,6 +34,45 @@
         </ul>
       </section>
 
+      <section class="calendar-section">
+        <h2>Calendrier interactif</h2>
+        <div class="calendar-card">
+          <div class="calendar-header">
+            <button id="prev-month" type="button" aria-label="Mois précédent">←</button>
+            <h3 id="calendar-month-label"></h3>
+            <button id="next-month" type="button" aria-label="Mois suivant">→</button>
+          </div>
+
+          <div class="weekday-row">
+            <span>Lun</span>
+            <span>Mar</span>
+            <span>Mer</span>
+            <span>Jeu</span>
+            <span>Ven</span>
+            <span>Sam</span>
+            <span>Dim</span>
+          </div>
+
+          <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="Calendrier mensuel"></div>
+        </div>
+
+        <div class="day-panel">
+          <h3 id="selected-day-title">Choisir une date</h3>
+          <ul id="day-events"></ul>
+
+          <form id="event-form" class="auth-form calendar-form">
+            <label for="event-time">Heure (optionnel)</label>
+            <input id="event-time" name="time" type="time" />
+
+            <label for="event-text">Nouvel événement</label>
+            <input id="event-text" name="text" type="text" maxlength="120" required />
+
+            <button type="submit">Ajouter</button>
+          </form>
+          <p id="event-status" class="status" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
       <section>
         <h2>Rappels</h2>
         <ul>
@@ -45,5 +84,180 @@
     </main>
 
     <footer>© Christophe White — white.is-a.dev</footer>
+
+    <script>
+      const monthLabel = document.getElementById('calendar-month-label');
+      const calendarGrid = document.getElementById('calendar-grid');
+      const prevMonthButton = document.getElementById('prev-month');
+      const nextMonthButton = document.getElementById('next-month');
+      const selectedDayTitle = document.getElementById('selected-day-title');
+      const dayEventsList = document.getElementById('day-events');
+      const eventForm = document.getElementById('event-form');
+      const eventStatus = document.getElementById('event-status');
+      const eventTimeInput = document.getElementById('event-time');
+      const eventTextInput = document.getElementById('event-text');
+
+      const monthFormatter = new Intl.DateTimeFormat('fr-CA', { month: 'long', year: 'numeric' });
+      const dateFormatter = new Intl.DateTimeFormat('fr-CA', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      const storageKey = 'whiteweb-calendar-events';
+      const noTimeSortValue = '99:99';
+      const storedEvents = localStorage.getItem(storageKey);
+      const eventsByDay = storedEvents ? JSON.parse(storedEvents) : {};
+
+      const now = new Date();
+      let currentYear = now.getFullYear();
+      let currentMonth = now.getMonth();
+      let selectedDateKey = toDateKey(now);
+
+      function toDateKey(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      }
+
+      function dateFromKey(key) {
+        const [year, month, day] = key.split('-').map(Number);
+        return new Date(year, month - 1, day);
+      }
+
+      function saveEvents() {
+        localStorage.setItem(storageKey, JSON.stringify(eventsByDay));
+      }
+
+      function getEventsForDate(key) {
+        return eventsByDay[key] || [];
+      }
+
+      function renderSelectedDay() {
+        if (!selectedDateKey) {
+          selectedDayTitle.textContent = 'Choisir une date';
+          dayEventsList.innerHTML = '';
+          return;
+        }
+
+        const selectedDate = dateFromKey(selectedDateKey);
+        selectedDayTitle.textContent = dateFormatter.format(selectedDate);
+
+        const events = getEventsForDate(selectedDateKey);
+        dayEventsList.innerHTML = '';
+
+        if (events.length === 0) {
+          const noEventItem = document.createElement('li');
+          noEventItem.textContent = 'Aucun événement pour cette journée.';
+          dayEventsList.appendChild(noEventItem);
+          return;
+        }
+
+        events.forEach((eventEntry) => {
+          const item = document.createElement('li');
+          item.textContent = eventEntry.time ? `${eventEntry.time} — ${eventEntry.text}` : eventEntry.text;
+          dayEventsList.appendChild(item);
+        });
+      }
+
+      function renderCalendar() {
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const firstWeekday = (firstDay.getDay() + 6) % 7;
+        const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        monthLabel.textContent = monthFormatter.format(firstDay);
+        calendarGrid.innerHTML = '';
+
+        for (let i = 0; i < firstWeekday; i += 1) {
+          const emptyCell = document.createElement('div');
+          emptyCell.className = 'calendar-empty';
+          calendarGrid.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= lastDate; day += 1) {
+          const currentDate = new Date(currentYear, currentMonth, day);
+          const dateKey = toDateKey(currentDate);
+          const eventsCount = getEventsForDate(dateKey).length;
+          const dayButton = document.createElement('button');
+          dayButton.type = 'button';
+          dayButton.className = 'calendar-day';
+          dayButton.setAttribute('role', 'gridcell');
+
+          if (dateKey === selectedDateKey) {
+            dayButton.classList.add('selected');
+          }
+
+          const dayNumber = document.createElement('span');
+          dayNumber.textContent = day;
+          dayButton.appendChild(dayNumber);
+
+          if (eventsCount > 0) {
+            const countBadge = document.createElement('span');
+            countBadge.className = 'event-count';
+            countBadge.textContent = eventsCount;
+            dayButton.appendChild(countBadge);
+          }
+          dayButton.addEventListener('click', () => {
+            selectedDateKey = dateKey;
+            eventStatus.textContent = '';
+            renderCalendar();
+            renderSelectedDay();
+          });
+
+          calendarGrid.appendChild(dayButton);
+        }
+      }
+
+      prevMonthButton.addEventListener('click', () => {
+        currentMonth -= 1;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear -= 1;
+        }
+        renderCalendar();
+      });
+
+      nextMonthButton.addEventListener('click', () => {
+        currentMonth += 1;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear += 1;
+        }
+        renderCalendar();
+      });
+
+      eventForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!selectedDateKey) {
+          eventStatus.textContent = 'Sélectionne une date avant d’ajouter un événement.';
+          return;
+        }
+
+        const text = eventTextInput.value.trim();
+        const time = eventTimeInput.value;
+
+        if (!text) {
+          eventStatus.textContent = 'Le texte de l’événement est obligatoire.';
+          return;
+        }
+
+        const dayEvents = getEventsForDate(selectedDateKey);
+        dayEvents.push({ time, text });
+        dayEvents.sort((a, b) => {
+          const safeTimeA = a.time || noTimeSortValue;
+          const safeTimeB = b.time || noTimeSortValue;
+          return safeTimeA.localeCompare(safeTimeB);
+        });
+        eventsByDay[selectedDateKey] = dayEvents;
+
+        saveEvents();
+        eventForm.reset();
+        eventStatus.textContent = 'Événement ajouté.';
+        renderCalendar();
+        renderSelectedDay();
+      });
+
+      renderCalendar();
+      renderSelectedDay();
+    </script>
   </body>
 </html>
