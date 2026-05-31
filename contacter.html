@@ -43,29 +43,26 @@
       const resultSection = document.getElementById('contact-result');
       const contactList = document.getElementById('contact-list');
 
-      form.addEventListener('submit', async (event) => {
+      // Liste des contacts à afficher si le prénom est correct
+      const mesContacts = [
+        "Maman: 514-555-0101",
+        "Papa: 514-555-0102",
+        "Frère: 514-555-0103"
+      ];
+
+      form.addEventListener('submit', (event) => {
         event.preventDefault();
         resultSection.classList.add('hidden');
         contactList.innerHTML = '';
         statusMessage.textContent = 'Vérification en cours...';
 
-        const prenom = new FormData(form).get('prenom');
+        const prenom = new FormData(form).get('prenom').trim();
 
-        try {
-          const response = await fetch('/api/contact/others', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prenom })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            statusMessage.textContent = data.message || 'Accès refusé.';
-            return;
-          }
-
-          data.contacts.forEach((entry) => {
+        // Remplace "Christophe" par le prénom (mot de passe) de ton choix
+        // .toLowerCase() permet de ne pas bloquer si la personne écrit "christophe" ou "Christophe"
+        if (prenom.toLowerCase() === "christophe") {
+          
+          mesContacts.forEach((entry) => {
             const item = document.createElement('li');
             item.textContent = entry;
             contactList.appendChild(item);
@@ -73,9 +70,8 @@
 
           statusMessage.textContent = '';
           resultSection.classList.remove('hidden');
-        } catch (error) {
-          console.error(error);
-          statusMessage.textContent = 'Erreur serveur. Essaie à nouveau plus tard.';
+        } else {
+          statusMessage.textContent = 'Accès refusé. Prénom incorrect.';
         }
       });
     </script>
