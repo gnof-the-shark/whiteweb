@@ -154,7 +154,36 @@
 
         events.forEach((eventEntry) => {
           const item = document.createElement('li');
-          item.textContent = eventEntry.time ? `${eventEntry.time} — ${eventEntry.text}` : eventEntry.text;
+          item.className = 'day-event-item';
+
+          const eventText = document.createElement('span');
+          eventText.textContent = eventEntry.time ? `${eventEntry.time} — ${eventEntry.text}` : eventEntry.text;
+
+          const deleteButton = document.createElement('button');
+          deleteButton.type = 'button';
+          deleteButton.className = 'event-delete';
+          deleteButton.textContent = 'Supprimer';
+          deleteButton.setAttribute('aria-label', `Supprimer l’événement ${eventEntry.text}`);
+          deleteButton.addEventListener('click', () => {
+            const dayEvents = getEventsForDate(selectedDateKey);
+            const eventIndex = dayEvents.indexOf(eventEntry);
+            if (eventIndex === -1) {
+              return;
+            }
+            dayEvents.splice(eventIndex, 1);
+            if (dayEvents.length === 0) {
+              delete eventsByDay[selectedDateKey];
+            } else {
+              eventsByDay[selectedDateKey] = dayEvents;
+            }
+            saveEvents();
+            eventStatus.textContent = 'Événement supprimé.';
+            renderCalendar();
+            renderSelectedDay();
+          });
+
+          item.appendChild(eventText);
+          item.appendChild(deleteButton);
           dayEventsList.appendChild(item);
         });
       }
