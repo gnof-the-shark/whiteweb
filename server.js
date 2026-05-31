@@ -4,6 +4,7 @@ const http = require('node:http');
 
 const rootDir = __dirname;
 const port = process.env.PORT || 8080;
+const MAX_REQUEST_SIZE = 1024 * 1024;
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -38,8 +39,12 @@ const parseContactData = () => {
       return [];
     }
 
-    return parsed.map((entry) => String(entry)).filter(Boolean);
-  } catch {
+    return parsed
+      .filter((entry) => typeof entry === 'string')
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0);
+  } catch (error) {
+    console.error('CONTACT_OTHERS_JSON invalide:', error);
     return [];
   }
 };
@@ -50,11 +55,19 @@ const sendJson = (res, status, payload) => {
 };
 
 const serveStaticFile = (req, res) => {
-  const requestPath = req.url === '/' ? '/index.html' : req.url;
-  const safePath = path.normalize(requestPath).replace(/^\.\.(?:\/|\\|$)/, '');
-  const filePath = path.join(rootDir, safePath);
+  const requestPath = req.url === '/' ? '/index.html' : String(req.url || '/').split('?')[0];
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(requestPath);
+  } catch {
+    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Bad Request');
+    return;
+  }
+  const filePath = path.resolve(rootDir, `.${decodedPath}`);
+  const relativePath = path.relative(rootDir, filePath);
 
-  if (!filePath.startsWith(rootDir)) {
+  if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
     res.writeHead(403);
     res.end('Forbidden');
     return;
@@ -78,15 +91,27 @@ const serveStaticFile = (req, res) => {
 const server = http.createServer((req, res) => {
   if (req.method === 'POST' && req.url === '/api/contact/others') {
     let body = '';
+    let requestTooLarge = false;
 
     req.on('data', (chunk) => {
-      body += chunk;
-      if (body.length > 1e6) {
-        req.destroy();
+      if (requestTooLarge) {
+        return;
       }
+
+      if (body.length + chunk.length > MAX_REQUEST_SIZE) {
+        requestTooLarge = true;
+        sendJson(res, 413, { message: 'Requête trop volumineuse.' });
+        return;
+      }
+
+      body += chunk;
     });
 
     req.on('end', () => {
+      if (requestTooLarge) {
+        return;
+      }
+
       const allowedNames = parseAllowedNames();
       const contacts = parseContactData();
 

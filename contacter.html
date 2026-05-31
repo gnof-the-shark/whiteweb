@@ -74,7 +74,8 @@
           statusMessage.textContent = '';
           resultSection.classList.remove('hidden');
         } catch (error) {
-          statusMessage.textContent = 'Erreur serveur. Réessaie plus tard.';
+          console.error(error);
+          statusMessage.textContent = 'Erreur serveur. Essaie à nouveau plus tard.';
         }
       });
     </script>
