@@ -31,8 +31,7 @@ jobs:
       - name: Prepare static files
         run: |
           mkdir -p /tmp/pages-site
-          cp /tmp/workspace/gnof-the-shark/whiteweb/index.html /tmp/pages-site/index.html
-          cp /tmp/workspace/gnof-the-shark/whiteweb/CNAME /tmp/pages-site/CNAME
+          cp index.html /tmp/pages-site/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
