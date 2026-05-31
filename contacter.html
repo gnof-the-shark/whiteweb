@@ -43,11 +43,16 @@
       const resultSection = document.getElementById('contact-result');
       const contactList = document.getElementById('contact-list');
 
-      // Liste des contacts à afficher si le prénom est correct
-      const mesContacts = [
+      // Liste des prénoms (mots de passe) qui ont le droit de voir les infos
+      // Écris-les en minuscules ici
+      const prenomsAutorises = ["christophe", "maman", "papa", "grand-maman"];
+
+      // Les informations uniques que tout le monde va voir
+      const infosPartagees = [
         "Maman: 514-555-0101",
         "Papa: 514-555-0102",
-        "Frère: 514-555-0103"
+        "Frère: 514-555-0103",
+        "Code du garage: 4321"
       ];
 
       form.addEventListener('submit', (event) => {
@@ -56,13 +61,13 @@
         contactList.innerHTML = '';
         statusMessage.textContent = 'Vérification en cours...';
 
-        const prenom = new FormData(form).get('prenom').trim();
+        // Récupère le prénom saisi et le met en minuscules
+        const prenom Saisi = new FormData(form).get('prenom').trim().toLowerCase();
 
-        // Remplace "Christophe" par le prénom (mot de passe) de ton choix
-        // .toLowerCase() permet de ne pas bloquer si la personne écrit "christophe" ou "Christophe"
-        if (prenom.toLowerCase() === "christophe") {
+        // Vérifie si le prénom fait partie de la liste autorisée
+        if (prenomsAutorises.includes(prenomSaisi)) {
           
-          mesContacts.forEach((entry) => {
+          infosPartagees.forEach((entry) => {
             const item = document.createElement('li');
             item.textContent = entry;
             contactList.appendChild(item);
@@ -71,7 +76,7 @@
           statusMessage.textContent = '';
           resultSection.classList.remove('hidden');
         } else {
-          statusMessage.textContent = 'Accès refusé. Prénom incorrect.';
+          statusMessage.textContent = 'Accès refusé. Prénom non autorisé.';
         }
       });
     </script>
