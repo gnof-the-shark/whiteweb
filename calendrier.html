@@ -43,7 +43,7 @@
             <button id="next-month" type="button" aria-label="Mois suivant">→</button>
           </div>
 
-          <div class="weekday-row" aria-hidden="true">
+          <div class="weekday-row">
             <span>Lun</span>
             <span>Mar</span>
             <span>Mer</span>
@@ -185,7 +185,16 @@
             dayButton.classList.add('selected');
           }
 
-          dayButton.innerHTML = `<span>${day}</span>${eventsCount > 0 ? `<span class="event-count">${eventsCount}</span>` : ''}`;
+          const dayNumber = document.createElement('span');
+          dayNumber.textContent = String(day);
+          dayButton.appendChild(dayNumber);
+
+          if (eventsCount > 0) {
+            const countBadge = document.createElement('span');
+            countBadge.className = 'event-count';
+            countBadge.textContent = String(eventsCount);
+            dayButton.appendChild(countBadge);
+          }
           dayButton.addEventListener('click', () => {
             selectedDateKey = dateKey;
             eventStatus.textContent = '';
@@ -232,9 +241,11 @@
 
         const dayEvents = getEventsForDate(selectedDateKey);
         dayEvents.push({ time, text });
-        if (time) {
-          dayEvents.sort((a, b) => a.time.localeCompare(b.time));
-        }
+        dayEvents.sort((a, b) => {
+          const safeTimeA = a.time || '99:99';
+          const safeTimeB = b.time || '99:99';
+          return safeTimeA.localeCompare(safeTimeB);
+        });
         eventsByDay[selectedDateKey] = dayEvents;
 
         saveEvents();
