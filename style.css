@@ -238,6 +238,26 @@ footer {
   text-transform: capitalize;
 }
 
+.day-event-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.event-delete {
+  border: 1px solid #fca5a5;
+  background: transparent;
+  color: #fecaca;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  cursor: pointer;
+}
+
+.event-delete:hover {
+  background: rgba(248, 113, 113, 0.2);
+}
+
 .calendar-form {
   margin-top: 0.8rem;
 }

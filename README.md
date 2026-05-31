@@ -6,6 +6,7 @@ Publication du site Famille White via GitHub Pages + configuration DNS/Email.
 
 - `me-contacter.html` : **publique** avec `contact@white.is-a.dev`
 - `contacter.html` : **protégée** (prénom obligatoire, vérification côté serveur)
+- `calendrier.html` : événements partagés via le serveur (stockage JSON dans `data/calendar-events.json`)
 
 ### Démarrage local du serveur protégé
 

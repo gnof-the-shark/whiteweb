@@ -105,10 +105,8 @@
         year: 'numeric'
       });
 
-      const storageKey = 'whiteweb-calendar-events';
       const noTimeSortValue = '99:99';
-      const storedEvents = localStorage.getItem(storageKey);
-      const eventsByDay = storedEvents ? JSON.parse(storedEvents) : {};
+      let eventsByDay = {};
 
       const now = new Date();
       let currentYear = now.getFullYear();
@@ -124,8 +122,30 @@
         return new Date(year, month - 1, day);
       }
 
-      function saveEvents() {
-        localStorage.setItem(storageKey, JSON.stringify(eventsByDay));
+      async function saveEvents() {
+        const response = await fetch('/api/calendar/events', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ eventsByDay })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to save calendar events to server');
+        }
+
+        const payload = await response.json();
+        eventsByDay = payload.eventsByDay || {};
+      }
+
+      async function loadEvents() {
+        const response = await fetch('/api/calendar/events');
+        if (!response.ok) {
+          throw new Error('Failed to load calendar events from server');
+        }
+        const payload = await response.json();
+        eventsByDay = payload.eventsByDay || {};
       }
 
       function getEventsForDate(key) {
@@ -154,7 +174,44 @@
 
         events.forEach((eventEntry) => {
           const item = document.createElement('li');
-          item.textContent = eventEntry.time ? `${eventEntry.time} — ${eventEntry.text}` : eventEntry.text;
+          item.className = 'day-event-item';
+
+          const eventText = document.createElement('span');
+          eventText.textContent = eventEntry.time ? `${eventEntry.time} — ${eventEntry.text}` : eventEntry.text;
+
+          const deleteButton = document.createElement('button');
+          deleteButton.type = 'button';
+          deleteButton.className = 'event-delete';
+          deleteButton.textContent = 'Supprimer';
+          deleteButton.setAttribute('aria-label', `Supprimer l’événement ${eventEntry.text}`);
+          deleteButton.addEventListener('click', async () => {
+            const dayEvents = getEventsForDate(selectedDateKey);
+            const eventIndex = dayEvents.indexOf(eventEntry);
+            if (eventIndex === -1) {
+              return;
+            }
+            const previousDayEvents = [...dayEvents];
+            dayEvents.splice(eventIndex, 1);
+            if (dayEvents.length === 0) {
+              delete eventsByDay[selectedDateKey];
+            } else {
+              eventsByDay[selectedDateKey] = dayEvents;
+            }
+            try {
+              await saveEvents();
+              eventStatus.textContent = 'Événement supprimé.';
+              renderCalendar();
+              renderSelectedDay();
+            } catch {
+              eventsByDay[selectedDateKey] = previousDayEvents;
+              eventStatus.textContent = 'Impossible de supprimer pour le moment.';
+              renderCalendar();
+              renderSelectedDay();
+            }
+          });
+
+          item.appendChild(eventText);
+          item.appendChild(deleteButton);
           dayEventsList.appendChild(item);
         });
       }
@@ -225,7 +282,7 @@
         renderCalendar();
       });
 
-      eventForm.addEventListener('submit', (event) => {
+      eventForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         if (!selectedDateKey) {
           eventStatus.textContent = 'Sélectionne une date avant d’ajouter un événement.';
@@ -240,7 +297,9 @@
           return;
         }
 
+        const hadDateKey = Object.prototype.hasOwnProperty.call(eventsByDay, selectedDateKey);
         const dayEvents = getEventsForDate(selectedDateKey);
+        const previousDayEvents = [...dayEvents];
         dayEvents.push({ time, text });
         dayEvents.sort((a, b) => {
           const safeTimeA = a.time || noTimeSortValue;
@@ -249,15 +308,35 @@
         });
         eventsByDay[selectedDateKey] = dayEvents;
 
-        saveEvents();
-        eventForm.reset();
-        eventStatus.textContent = 'Événement ajouté.';
-        renderCalendar();
-        renderSelectedDay();
+        try {
+          await saveEvents();
+          eventForm.reset();
+          eventStatus.textContent = 'Événement ajouté.';
+          renderCalendar();
+          renderSelectedDay();
+        } catch {
+          if (hadDateKey) {
+            eventsByDay[selectedDateKey] = previousDayEvents;
+          } else {
+            delete eventsByDay[selectedDateKey];
+          }
+          eventStatus.textContent = 'Impossible d’ajouter pour le moment.';
+          renderCalendar();
+          renderSelectedDay();
+        }
       });
 
-      renderCalendar();
-      renderSelectedDay();
+      (async () => {
+        try {
+          await loadEvents();
+          eventStatus.textContent = '';
+        } catch {
+          eventsByDay = {};
+          eventStatus.textContent = 'Impossible de charger les événements.';
+        }
+        renderCalendar();
+        renderSelectedDay();
+      })();
     </script>
   </body>
 </html>
