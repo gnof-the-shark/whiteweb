@@ -12,24 +12,71 @@
       <nav aria-label="Navigation principale">
         <a href="index.html">Accueil</a>
         <a href="nouvelles.html">Nouvelles</a>
-        <a href="contacter.html" aria-current="page">Me contacter</a>
-        <a href="apropos.html">À propos</a>
+        <a href="contacter.html" aria-current="page">Contacter les autres</a>
+        <a href="me-contacter.html">Me contacter</a>
       </nav>
     </header>
 
     <main>
       <section>
-        <h2><span class="placeholder">Me contacter (Christophe)</span></h2>
+        <h2>Contacter les autres</h2>
+        <p>Entre ton prénom pour voir les coordonnées privées.</p>
+        <form id="contact-form" class="auth-form">
+          <label for="prenom">Prénom</label>
+          <input id="prenom" name="prenom" type="text" autocomplete="given-name" required />
+          <button type="submit">Accéder aux infos</button>
+        </form>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
       </section>
 
-      <section>
-        <h2><span class="placeholder">Christophe White</span></h2>
-        <p><span class="placeholder">Email:<a href="mailto:contact@white.is-a.dev">contact@white.is-a.dev</a></span></p>
-        <p><span class="placeholder">438-527-1883</span></p>
-        <p><span class="placeholder">9774 ave St-Charles, H2C2L1, Mtl</span></p>
+      <section id="contact-result" class="hidden">
+        <h2>Coordonnées</h2>
+        <ul id="contact-list"></ul>
       </section>
     </main>
 
     <footer>© Christophe White — white.is-a.dev</footer>
+
+    <script>
+      const form = document.getElementById('contact-form');
+      const statusMessage = document.getElementById('status');
+      const resultSection = document.getElementById('contact-result');
+      const contactList = document.getElementById('contact-list');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        resultSection.classList.add('hidden');
+        contactList.innerHTML = '';
+        statusMessage.textContent = 'Vérification en cours...';
+
+        const prenom = new FormData(form).get('prenom');
+
+        try {
+          const response = await fetch('/api/contact/others', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prenom })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            statusMessage.textContent = data.message || 'Accès refusé.';
+            return;
+          }
+
+          data.contacts.forEach((entry) => {
+            const item = document.createElement('li');
+            item.textContent = entry;
+            contactList.appendChild(item);
+          });
+
+          statusMessage.textContent = '';
+          resultSection.classList.remove('hidden');
+        } catch (error) {
+          statusMessage.textContent = 'Erreur serveur. Réessaie plus tard.';
+        }
+      });
+    </script>
   </body>
 </html>

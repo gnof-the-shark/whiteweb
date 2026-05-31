@@ -2,6 +2,23 @@
 
 Publication du site famille White via GitHub Pages + configuration DNS/Email.
 
+## Pages de contact
+
+- `me-contacter.html` : **publique** avec `contact@white.is-a.dev`
+- `contacter.html` : **protégée** (prénom obligatoire, vérification côté serveur)
+
+### Démarrage local du serveur protégé
+
+```bash
+ALLOWED_FIRST_NAMES="alice,bob" \
+CONTACT_OTHERS_JSON='["Alice: alice@example.com", "Bob: bob@example.com"]' \
+npm start
+```
+
+Puis ouvrir `http://localhost:8080/contacter.html`.
+
+> Les coordonnées privées ne sont pas dans le HTML et doivent être passées via `CONTACT_OTHERS_JSON`.
+
 ## GitHub Pages
 
 1. Ouvrir **Settings > Pages** du repo `gnof-the-shark/whiteweb`.

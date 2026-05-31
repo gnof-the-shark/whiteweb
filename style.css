@@ -81,6 +81,45 @@ h2 { margin-top: 0; margin-bottom: 0.6rem; }
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.auth-form {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 420px;
+}
+
+.auth-form input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.85);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+}
+
+.auth-form button {
+  width: fit-content;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: #f8fafc;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+.auth-form button:hover {
+  background: rgba(56, 189, 248, 0.2);
+}
+
+.status {
+  min-height: 1.6rem;
+  margin: 0.7rem 0 0;
+  color: #fca5a5;
+}
+
+.hidden {
+  display: none;
+}
+
 ul { margin: 0; padding-left: 1.2rem; }
 li { margin-bottom: 0.7rem; }
 
