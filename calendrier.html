@@ -106,6 +106,7 @@
       });
 
       const storageKey = 'whiteweb-calendar-events';
+      const noTimeSortValue = '99:99';
       const storedEvents = localStorage.getItem(storageKey);
       const eventsByDay = storedEvents ? JSON.parse(storedEvents) : {};
 
@@ -186,13 +187,13 @@
           }
 
           const dayNumber = document.createElement('span');
-          dayNumber.textContent = String(day);
+          dayNumber.textContent = day;
           dayButton.appendChild(dayNumber);
 
           if (eventsCount > 0) {
             const countBadge = document.createElement('span');
             countBadge.className = 'event-count';
-            countBadge.textContent = String(eventsCount);
+            countBadge.textContent = eventsCount;
             dayButton.appendChild(countBadge);
           }
           dayButton.addEventListener('click', () => {
@@ -242,8 +243,8 @@
         const dayEvents = getEventsForDate(selectedDateKey);
         dayEvents.push({ time, text });
         dayEvents.sort((a, b) => {
-          const safeTimeA = a.time || '99:99';
-          const safeTimeB = b.time || '99:99';
+          const safeTimeA = a.time || noTimeSortValue;
+          const safeTimeB = b.time || noTimeSortValue;
           return safeTimeA.localeCompare(safeTimeB);
         });
         eventsByDay[selectedDateKey] = dayEvents;
