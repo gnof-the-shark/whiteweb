@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>White Family - Accueil</title>
+    <title>White Family - Me contacter</title>
     <style>
       :root {
         color-scheme: dark;
@@ -15,16 +15,13 @@
         --text: #e2e8f0;
         --accent: #38bdf8;
       }
-
       * { box-sizing: border-box; }
-
       body {
         margin: 0;
         background: radial-gradient(circle at 10% 10%, #1d4ed8 0%, #0f172a 40%, var(--bg) 100%);
         color: var(--text);
         line-height: 1.5;
       }
-
       .top-banner {
         position: sticky;
         top: 0;
@@ -38,11 +35,8 @@
         background: rgba(2, 6, 23, 0.75);
         border-bottom: 1px solid var(--border);
       }
-
       .site-name { margin: 0; font-size: 1.1rem; letter-spacing: 0.04em; }
-
       nav { display: flex; flex-wrap: wrap; gap: 0.8rem; }
-
       nav a {
         color: var(--text);
         text-decoration: none;
@@ -50,29 +44,24 @@
         border-radius: 999px;
         border: 1px solid transparent;
       }
-
       nav a:hover,
       nav a[aria-current="page"] {
         border-color: var(--accent);
         color: #f8fafc;
       }
-
       main {
         width: min(1000px, 92vw);
         margin: 2rem auto 3rem;
         display: grid;
         gap: 1rem;
       }
-
       section {
         background: var(--panel);
         border: 1px solid var(--border);
         border-radius: 16px;
         padding: 1.2rem;
       }
-
       h2 { margin-top: 0; margin-bottom: 0.6rem; }
-
       .placeholder {
         display: inline-block;
         background: rgba(56, 189, 248, 0.16);
@@ -81,13 +70,6 @@
         border-radius: 10px;
         padding: 0.15rem 0.45rem;
       }
-
-      .grid {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      }
-
       footer {
         text-align: center;
         color: #94a3b8;
@@ -99,30 +81,25 @@
     <header class="top-banner">
       <h1 class="site-name">White Family</h1>
       <nav aria-label="Navigation principale">
-        <a href="/index.html" aria-current="page">Accueil</a>
+        <a href="/index.html">Accueil</a>
         <a href="/nouvelles.html">Nouvelles</a>
-        <a href="/contacter.html">Me contacter</a>
+        <a href="/contacter.html" aria-current="page">Me contacter</a>
         <a href="/apropos.html">À propos</a>
       </nav>
     </header>
 
     <main>
       <section>
-        <h2><span class="placeholder">[TITRE ACCUEIL À REMPLACER]</span></h2>
-        <p><span class="placeholder">[TEXTE INTRODUCTION À REMPLACER]</span></p>
+        <h2><span class="placeholder">[CONTACT - TITRE À REMPLACER]</span></h2>
+        <p><span class="placeholder">[TEXTE DE CONTACT À REMPLACER]</span></p>
       </section>
 
-      <div class="grid">
-        <section>
-          <h2><span class="placeholder">[BLOC 1 - TITRE]</span></h2>
-          <p><span class="placeholder">[BLOC 1 - TEXTE]</span></p>
-        </section>
-
-        <section>
-          <h2><span class="placeholder">[BLOC 2 - TITRE]</span></h2>
-          <p><span class="placeholder">[BLOC 2 - TEXTE]</span></p>
-        </section>
-      </div>
+      <section>
+        <h2><span class="placeholder">[COORDONNÉES]</span></h2>
+        <p>Email: <a href="mailto:contact@white.is-a.dev">contact@white.is-a.dev</a></p>
+        <p><span class="placeholder">[TÉLÉPHONE À REMPLACER]</span></p>
+        <p><span class="placeholder">[ADRESSE À REMPLACER]</span></p>
+      </section>
     </main>
 
     <footer>© White Family — white.is-a.dev</footer>
