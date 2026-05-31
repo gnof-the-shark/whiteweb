@@ -28,10 +28,15 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Prepare static files
+        run: |
+          mkdir -p /tmp/pages-site
+          cp /tmp/workspace/gnof-the-shark/whiteweb/index.html /tmp/pages-site/index.html
+          cp /tmp/workspace/gnof-the-shark/whiteweb/CNAME /tmp/pages-site/CNAME
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: /tmp/pages-site
 
       - name: Deploy to GitHub Pages
         id: deployment
