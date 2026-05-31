@@ -1,0 +1,9 @@
+{
+  "name": "whiteweb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site White avec page de contact protégée côté serveur",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
